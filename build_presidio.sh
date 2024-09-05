@@ -20,10 +20,10 @@ registryId=$(az acr show --resource-group synapse-ws-rg --name acrdevzan1 --quer
 az role assignment create --assignee $principalId --scope $registryId --role "AcrPull"
 
 #deploy the web app
-az webapp create --resource-group presidio-rg --plan piiAppService --name presidioPII --deployment-container-image-name acrdevzan1.azurecr.io/predisio_pii
+az webapp create --resource-group presidio-rg --plan piiAppService --name presidioPII --deployment-container-image-name [].azurecr.io/predisio_pii
 
 #update the web app with the new image version
-az webapp config container set --resource-group presidio-rg --name presidioPII --container-image-name acrdevzan1.azurecr.io/predisio_pii
+az webapp config container set --resource-group presidio-rg --name presidioPII --container-image-name [].azurecr.io/predisio_pii
 
 #test the web app
 curl -X POST https://presidiopii.azurewebsites.net/analyze -H "Content-Type: application/json" -d '{"text": ""}'
