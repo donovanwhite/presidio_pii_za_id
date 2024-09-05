@@ -4,8 +4,8 @@ az acr login --name ""
 
 # Build the Docker image
 docker build --no-cache -t predisio_pii .
-docker tag predisio_pii:v1.1.22 acrdevzan1.azurecr.io/predisio_pii
-docker push acrdevzan1.azurecr.io/predisio_pii
+docker tag predisio_pii [].azurecr.io/predisio_pii
+docker push [].azurecr.io/predisio_pii
 
 #create a resource group and an app service plan
 az group create --name presidio-rg --location southafricanorth
