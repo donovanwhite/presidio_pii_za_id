@@ -12,7 +12,7 @@ class ZaIdentityCardRecognizer(PatternRecognizer):
     PATTERNS = [
         Pattern(
             "South African ID Number (weak)",
-            r"\b\d{6}\d{7}\b",  # Simplified pattern to match 13 digits with the first 6 being yymmdd and luhn will do the rest
+            r"\b\d[-.]?\d[-.]?\d[-.]?\d[-.]?\d[-.]?\d[-.]?\d[-.]?\d[-.]?\d[-.]?\d[-.]?\d[-.]?\d[-.]?\d\b",
             0.5,
         ),
     ]
@@ -45,7 +45,7 @@ class ZaIdentityCardRecognizer(PatternRecognizer):
     def luhn_checksum(self, id_number):
         def digits_of(n):
             return [int(d) for d in str(n)]
-        digits = digits_of(id_number)
+        digits = digits_of(id_number.replace("-", "").replace(".", ""))
         odd_digits = digits[-1::-2]
         even_digits = digits[-2::-2]
         checksum = sum(odd_digits)
@@ -54,17 +54,24 @@ class ZaIdentityCardRecognizer(PatternRecognizer):
         return checksum % 10
 
     def is_valid_sa_id(self, id_number):
-        return self.luhn_checksum(id_number) == 0
+        cleaned_id = id_number.replace("-", "").replace(".", "")
+        print(f"Cleaned ID: {cleaned_id}")
+        return self.luhn_checksum(cleaned_id) == 0
 
     def analyze(self, text, entities, nlp_artifacts):
         results = super().analyze(text, entities, nlp_artifacts)
         filtered_results = []
         for result in results:
             id_number = text[result.start:result.end]
-            if self.is_valid_sa_id(id_number):
+            print(f"Detected ID: {id_number}")
+            cleaned_id = id_number.replace("-", "").replace(".", "")
+            print(f"Cleaned ID: {cleaned_id}")
+            if self.is_valid_sa_id(cleaned_id):
                 result.score = 1.0
                 filtered_results.append(result)
+        print(f"Filtered Results: {filtered_results}")
         return filtered_results
+
 
 # Initialize the engines
 analyzer = AnalyzerEngine()
@@ -94,8 +101,8 @@ async def analyze(request: Request):
 
         # Anonymize the detected entities by replacing them
         anonymized_text = anonymizer.anonymize(text=text, analyzer_results=results, operators={
-            "ZA_ID": OperatorConfig("replace", {"new_value": "ID_NUMBER"}),
-            "CREDIT_CARD": OperatorConfig("replace", {"new_value": "CREDIT_CARD_NUMBER"})
+            "ZA_ID": OperatorConfig("replace", {"new_value": "******"}),
+            "CREDIT_CARD": OperatorConfig("replace", {"new_value": "******"})
         })
 
         # Prepare the response
