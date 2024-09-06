@@ -1,5 +1,7 @@
 # presidio_pii_za_id
-This project involves deploying a web application that uses the Presidio SDK for PII detection and anonymization of the South Africa African ID number as well as credit card numbers . The deployment process includes building a Docker image, pushing it to Azure Container Registry (ACR), deploying it to Azure App Service, setting up an Azure SQL Database, and creating necessary stored procedures and triggers. Below are the key steps involved:
+This project involves deploying a web application that uses the Presidio SDK for PII detection and anonymization of the South Africa African ID number including being able to handle input errors using a custom class, secondary to this is the builtin recognizer to handle credit card numbers. The deployment process includes building a Docker image, pushing it to Azure Container Registry (ACR), deploying it to Azure App Service, setting up an Azure SQL Database, and creating necessary stored procedures and triggers. 
+
+Below are the key steps involved, please refer to the app and db folder for the artefacts as well as the build_presidio.sh for the az commands:
 
 # 1. Azure Container Registry (ACR) Setup
 Login to ACR: Authenticate to the Azure Container Registry using the az acr login command.
@@ -18,5 +20,5 @@ Create Trigger: Define and create the trigger to handle PII anonymization before
 # 5. Deploy Web Application
 Create Web App: Deploy the web application using the az webapp create command, specifying the Docker image from ACR.
 Update Web App Configuration: Update the web app configuration to use the latest Docker image version.
-#6 6. Testing the Deployment
+# 6. Testing the Deployment
 Test Endpoints: Use curl commands to test the web application’s endpoints and ensure it correctly detects and anonymizes PII.
